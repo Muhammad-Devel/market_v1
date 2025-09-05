@@ -1,42 +1,55 @@
-import React, { createContext, useState, useEffect } from 'react';
+import axios from "axios";
+import React, { createContext, useState, useEffect } from "react";
 
 interface User {
   id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'user';
+  phone: string;
+  nickname: string;
+  role: "admin" | "user";
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  verifyOTP: (numberOTP: string) => Promise<boolean>;
+  register: (
+    nickname: string,
+    phone: string,
+    password: string
+  ) => Promise<boolean>;
+  login: (phone: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in (e.g., check localStorage, cookies, etc.)
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem("authToken");
         if (token) {
-          // Verify token with backend
-          // For now, we'll simulate a user
-          setUser({
-            id: '1',
-            email: 'admin@example.com',
-            name: 'Admin User',
-            role: 'admin',
-          });
+          const response = await axios.get(
+            "http://localhost:3000/api/user/me",
+            {
+              headers: {
+                Authorization: token,
+              },
+            }
+          );
+
+          setUser(response.data.user);
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error("Auth check failed:", error);
+        localStorage.removeItem("authToken");
       } finally {
         setIsLoading(false);
       }
@@ -45,26 +58,107 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  // verify OTP
+
+  const verifyOTP = async (numberOTP: string): Promise<boolean> => {
     try {
       setIsLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (email === 'admin@example.com' && password === 'password') {
-        const user = {
-          id: '1',
-          email: 'admin@example.com',
-          name: 'Admin User',
-          role: 'admin' as const,
-        };
+
+      // LocalStorage dan token olish
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No token found. Please register or login first.");
+        return false;
+      }
+
+      // OTP ni backendga yuborish (header + body bilan)
+      const response = await axios.post(
+        "http://46.173.26.14:4202/api/user/verify-otp",
+        { otp: parseInt(numberOTP) },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      const { token: newToken } = response.data;
+      console.log(token);
+
+      if (newToken) {
+        // setUser(user);
+        localStorage.setItem("authToken", newToken); // yangi token bo‘lsa yangilab qo‘yiladi
+        return true;
+      }
+
+      return false;
+    } catch (error: any) {
+      console.error(
+        "OTP verification failed:",
+        error.response?.data || error.message
+      );
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ Registratsiya funksiyasi
+  const register = async (
+    nickname: string,
+    phone: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(
+        "http://46.173.26.14:4202/api/user/register",
+        {
+          nickname,
+          phone,
+          password,
+        }
+      );
+
+      const { token } = response.data;
+
+      if (token) {
         setUser(user);
-        localStorage.setItem('authToken', 'dummy-token');
+        localStorage.setItem("authToken", token);
         return true;
       }
       return false;
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (error: any) {
+      console.error("Register failed:", error.response?.data || error.message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const login = async (phone: string, password: string): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(
+        "http://46.173.26.14:4202/api/user/login",
+        {
+          phone,
+          password,
+        }
+      );
+
+      const { token, user } = response.data;
+
+      if (token && user) {
+        setUser(user);
+        localStorage.setItem("authToken", token);
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      console.error("Login failed:", error.response?.data || error.message);
       return false;
     } finally {
       setIsLoading(false);
@@ -73,19 +167,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
   };
 
   const authValue: AuthContextType = {
     user,
+    verifyOTP,
+    register,
     login,
     logout,
     isLoading,
   };
 
   return (
-    <AuthContext.Provider value={authValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
-}; 
+};
