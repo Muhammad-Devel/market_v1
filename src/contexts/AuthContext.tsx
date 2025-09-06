@@ -120,10 +120,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      const { user } = response.data;
+      const { token } = response.data;
 
-      if (user) {
-        setUser(user);
+      if (token) {
+        // setUser(user);
         localStorage.setItem("otpToken", token);
         return true;
       }
@@ -151,9 +151,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      const { token, user} = response.data;
+      const { user} = response.data;
 
-      if (token) {
+      if (user) {
         setUser(user);
         localStorage.setItem("authToken", token);
         return true;
