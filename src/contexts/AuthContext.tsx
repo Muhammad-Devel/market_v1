@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
 
       // LocalStorage dan token olish
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("otpToken");
       if (!token) {
         console.error("No token found. Please register or login first.");
         return false;
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // OTP ni backendga yuborish (header + body bilan)
       const response = await axios.post(
-        "http://46.173.26.14:4202/api/user/verify-otp",
+        "https://46.173.26.14:4202/api/user/verify-otp",
         { otp: parseInt(numberOTP) },
         {
           headers: {
@@ -83,7 +83,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       const { token: newToken } = response.data;
-      console.log(token);
 
       if (newToken) {
         // setUser(user);
@@ -113,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
 
       const response = await axios.post(
-        "http://46.173.26.14:4202/api/user/register",
+        "https://46.173.26.14:4202/api/user/register",
         {
           nickname,
           phone,
@@ -125,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (token) {
         setUser(user);
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("otpToken", token);
         return true;
       }
       return false;
@@ -137,12 +136,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const login = async (nickname: string, password: string): Promise<boolean> => {
+  const login = async (
+    nickname: string,
+    password: string
+  ): Promise<boolean> => {
     try {
       setIsLoading(true);
 
       const response = await axios.post(
-        "http://46.173.26.14:4202/api/user/login",
+        "https://46.173.26.14:4202/api/user/login",
         {
           nickname: nickname,
           password,

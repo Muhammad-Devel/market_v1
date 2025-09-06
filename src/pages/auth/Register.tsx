@@ -20,6 +20,8 @@ const Login: React.FC = () => {
     }
 
     const success = await register(nickname, phone, password);
+    console.log(success, "success");
+
     if (success) {
       navigate("/verify-otp");
     } else {
