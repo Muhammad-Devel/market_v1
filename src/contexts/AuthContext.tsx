@@ -151,11 +151,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      const { user} = response.data;
+      const { user } = response.data.data;
 
       if (user) {
         setUser(user);
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("user", user);
         return true;
       }
       return false;
