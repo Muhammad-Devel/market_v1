@@ -82,11 +82,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      const { token: newToken } = response.data;
+      const { user } = response.data;
 
-      if (newToken) {
+      if (user) {
         // setUser(user);
-        localStorage.setItem("authToken", newToken); // yangi token bo‘lsa yangilab qo‘yiladi
+        localStorage.setItem("user", user); // yangi token bo‘lsa yangilab qo‘yiladi
         return true;
       }
 
@@ -114,8 +114,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.post(
         "https://e-mall.webpack.uz/api/user/register",
         {
-          nickname,
           phone,
+          nickname, 
           password,
         }
       );
