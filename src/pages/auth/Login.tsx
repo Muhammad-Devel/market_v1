@@ -51,7 +51,7 @@ const Login: React.FC = () => {
                 htmlFor="phone"
                 className="block text-sm font-medium text-gray-700"
               >
-                Phone Number
+                Your Nickname
               </label>
               <input
                 id="phone"
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder="Enter your nickname"
               />
             </div>
 
