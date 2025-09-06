@@ -34,10 +34,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem("user.activeToken");
         if (token) {
           const response = await axios.get(
-            "http://localhost:3000/api/user/me",
+            "https://e-mall.webpack.uz/api/user/me",
             {
               headers: {
                 Authorization: token,
@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
       } finally {
         setIsLoading(false);
       }
