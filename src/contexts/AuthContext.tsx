@@ -151,8 +151,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
-      alert(response.data);
-      const { user } = response.data.data;
+      
+      const { user } = response.data;
 
       if (user) {
         setUser(user);
