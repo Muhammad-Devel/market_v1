@@ -151,6 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       );
 
+      alert(response);
       const { user } = response.data.data;
 
       if (user) {
