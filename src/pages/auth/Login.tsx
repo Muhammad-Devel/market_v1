@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const Login: React.FC = () => {
-  const [phone, setPhone] = useState("");
+  const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login, isLoading } = useAuth();
@@ -13,12 +13,12 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError("");
 
-    if (!phone || !password) {
+    if (!nickname || !password) {
       setError("Please fill in all fields");
       return;
     }
 
-    const success = await login(phone, password);
+    const success = await login(nickname, password);
     if (success) {
       navigate("/admin");
     } else {
@@ -59,8 +59,8 @@ const Login: React.FC = () => {
                 type="phone"
                 autoComplete="phone"
                 required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Enter your email"
               />
@@ -99,7 +99,14 @@ const Login: React.FC = () => {
 
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
-              Demo credentials: admin@example.com / password
+              go to{" "}
+              <a
+                href="/"
+                className="text-blue-600 hover:text-blue-500"
+                onClick={() => navigate("/register")}
+              >
+                Sign up
+              </a>
             </p>
           </div>
         </div>

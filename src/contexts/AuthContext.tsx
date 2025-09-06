@@ -16,7 +16,7 @@ interface AuthContextType {
     phone: string,
     password: string
   ) => Promise<boolean>;
-  login: (phone: string, password: string) => Promise<boolean>;
+  login: (nickname: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -137,14 +137,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const login = async (phone: string, password: string): Promise<boolean> => {
+  const login = async (nickname: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
 
       const response = await axios.post(
         "http://46.173.26.14:4202/api/user/login",
         {
-          phone,
+          nickname: nickname,
           password,
         }
       );
