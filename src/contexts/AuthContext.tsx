@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       // OTP ni backendga yuborish (header + body bilan)
       const response = await axios.post(
-        "https://46.173.26.14:4202/api/user/verify-otp",
+        "https://e-mall.webpack.uz/api/user/verify-otp",
         { otp: parseInt(numberOTP) },
         {
           headers: {
@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
 
       const response = await axios.post(
-        "https://46.173.26.14:4202/api/user/register",
+        "https://e-mall.webpack.uz/api/user/register",
         {
           nickname,
           phone,
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
 
       const response = await axios.post(
-        "https://46.173.26.14:4202/api/user/login",
+        "https://e-mall.webpack.uz/api/user/login",
         {
           nickname: nickname,
           password,
